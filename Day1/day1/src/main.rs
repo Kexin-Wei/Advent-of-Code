@@ -8,24 +8,30 @@ fn main() {
     let data_path = current_dir.parent().unwrap().join(data_file_name);
     println!("the data file is {}", data_path.display());
     let data_file = fs::read_to_string(data_path).expect("Should have been able to read the file");
-    // print 10 lines
-    for line in data_file.lines().take(10) {
-        println!("{}", line);
-    }
 
+    // timing the program
+    let start = std::time::Instant::now();
     // prepare two vec
     let mut vec1: Vec<i32> = Vec::new();
     let mut vec2: Vec<i32> = Vec::new();
-    let mut diff: i32 = 0;
 
     // read data
-    for line in data_file.lines().take(10) {
+    for line in data_file.lines() {
         let parts: Vec<&str> = line.split(' ').collect();
-        let num1 = parts[0].parse::<i32>().unwrap();
-        let num2 = parts[1].parse::<i32>().unwrap();
-        println!("{} {}", num1, num2);
-        vec1.push(num1);
-        vec2.push(num2);
+        let mut nums: Vec<i32> = Vec::new();
+        for i in parts {
+            // check whether can convert to number
+            let converted: bool = i.parse::<i32>().is_ok();
+            if !converted {
+                continue;
+            }
+            nums.push(i.parse::<i32>().unwrap());
+        }
+        if nums.len() < 2 {
+            continue;
+        }
+        vec1.push(nums[0]);
+        vec2.push(nums[1]);
     }
     vec1.sort();
     vec2.sort();
@@ -36,8 +42,8 @@ fn main() {
         .map(|(&a, &b)| a - b)
         .collect::<Vec<i32>>();
 
-    for i in vec3 {
-        diff += i;
-    }
-    println!("{}", diff);
+    // get sum of vec3
+    let sum: i32 = vec3.iter().sum();
+    let end = start.elapsed();
+    println!("result: {}, time: {}ms", sum, end.as_millis());
 }
