@@ -36,10 +36,10 @@ fn main() {
     vec1.sort();
     vec2.sort();
 
-    let vec3 = vec2
+    let vec3 = vec1
         .iter()
-        .zip(vec1.iter())
-        .map(|(&a, &b)| a - b)
+        .zip(vec2.iter())
+        .map(|(&a, &b)| (b - a).abs())
         .collect::<Vec<i32>>();
 
     // get sum of vec3
